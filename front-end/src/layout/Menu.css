@@ -1,0 +1,36 @@
+.primary-btn {
+    background-color: #9A50E5 !important;
+  }
+  .primary-btn:hover {
+    background-color: #c0509d !important;
+  }
+  .primary-btn:focus {
+    outline: none;
+  }
+  .primary-btn {
+    font-weight: 600 !important;
+    font-size: 1.25rem !important;
+  }
+  
+  nav {
+    min-width: 200px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    color: #9A50E5;
+  }
+  .nav-link:hover {
+    color: #c0509d;
+  }
+  
+  .nav-title {
+    font-size: 1.5rem;
+  }
+  
+  @media screen and (max-width: 880px) {
+    .primary-btn {
+      margin-bottom: 1rem !important;
+    }
+  }
