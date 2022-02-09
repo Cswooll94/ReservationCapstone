@@ -57,8 +57,10 @@ export function today() {
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
  */
 export function previous(currentDate) {
-  const date = new Date(...currentDate.split("-"));
-  date.setMonth(date.getMonth() - 1);
+  let [ year, month, day ] = currentDate.split("-");
+  month -= 1;
+  const date = new Date(year, month, day);
+  date.setMonth(date.getMonth());
   date.setDate(date.getDate() - 1);
   return asDateString(date);
 }
@@ -71,8 +73,35 @@ export function previous(currentDate) {
  *  the date one day after currentDate, formatted as YYYY-MM-DD
  */
 export function next(currentDate) {
-  const date = new Date(...currentDate.split("-"));
-  date.setMonth(date.getMonth() - 1);
+  let [ year, month, day ] = currentDate.split("-");
+  month -= 1;
+  const date = new Date(year, month, day);
+  date.setMonth(date.getMonth());
   date.setDate(date.getDate() + 1);
   return asDateString(date);
+}
+
+export function checkTuesday(date) {
+  let d = new Date(date);
+  if (d.getDay() === 2) return true;
+  return false;
+}
+
+export function isDatePast(date) {
+  let today = new Date();
+  let checkedDate = new Date(date);
+  return today > checkedDate;
+}
+
+export function isClosed(time) {
+  time = new Date(time);
+  if (time.getHours() < 10) return true;
+  if (time.getHours() === 10) {
+    return time.getMinutes() < 30;
+  }
+  if (time.getHours() > 9) return true;
+  if (time.getHours() === 9) {
+    return time.getMinutes() > 30;
+  }
+  return false;
 }

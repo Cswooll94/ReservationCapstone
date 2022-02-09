@@ -1,50 +1,52 @@
-import React, { useState } from "react";
-import {listReservations } from "../utils/api";
-import Reservations from "../dashboard/Reservations";
-import "./Search.css";
+import { useState } from "react";
+import { search } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
+import DisplayReservations from "../dashboard/DisplayReservations";
 
 function Search() {
-  const [reservations, setReservations] = useState([]);
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [showResults, setShowResults] = useState(false);
+  const [searchNumber, setSearchNumber] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [notFoundError, setNotFoundError] = useState(null);
 
   function changeHandler({ target: { value } }) {
-    setMobileNumber(value);
+    setSearchNumber(value);
   }
 
-  function submitHandler(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    search();
-  }
-
-  function search() {
-    setShowResults(false);
-    listReservations({ mobile_number: mobileNumber })
-      .then(setReservations)
-      .then(() => setShowResults(true))
+  async function submitHandler(evt) {
+    const ac = new AbortController();
+    evt.preventDefault();
+    evt.stopPropagation();
+    setNotFoundError(null);
+    const results = await search(searchNumber, ac.signal);
+    if (!results.length) setNotFoundError({ message: "No reservations found" });
+    setSearchResults(results);
+    return () => ac.abort();
   }
 
   return (
-    <main>
-      <h1>Search reservations</h1>
-      <form onSubmit={submitHandler}>
-          <div className="row">
-            <div className="form-group col-md-4 col-sm-12">
-              <label htmlFor="mobile_number">Mobile Number:</label>
-              <div className="input-group">
-                <input type="text" id="mobile_number" name="mobile_number" className="form-control" value={mobileNumber} onChange={changeHandler}/>
-                <div className="input-group-append">
-                  <button type="submit" className="btn-primary">Search</button>
-                </div>
-              </div>
-            </div>
-          </div>
-      </form>
-      {showResults && (
-        <Reservations reservations={reservations} />
-      )}
-    </main>
+    <div>
+      <h1>Search here</h1>
+      <div className="row">
+        <form onSubmit={submitHandler} className="col-4">
+          <label htmlFor="mobile_number">Mobile number</label>
+          <input
+            name="mobile_number"
+            type="text"
+            id="mobile_number"
+            className="form-control"
+            value={searchNumber}
+            required
+            placeholder="Enter a phone number"
+            onChange={changeHandler}
+          />
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
+        </form>
+      </div>
+      <ErrorAlert error={notFoundError} />
+      <DisplayReservations reservations={searchResults}/>
+    </div>
   );
 }
 

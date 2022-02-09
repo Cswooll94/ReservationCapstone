@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables, finishTable, cancelReservation } from "../utils/api";
+import { useHistory } from "react-router-dom";
+import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import Reservations from "./Reservations";
-import Tables from "./Tables";
+import {
+  formatAsDate,
+  previous,
+  next,
+  today,
+} from "../utils/date-time";
+import useQuery from "../utils/useQuery";
+import DisplayReservations from "./DisplayReservations";
+import TableList from "./TableList";
 
+/**
+ * Defines the dashboard page.
+ * @param date
+ *  the date for which the user wants to view reservations.
+ * @returns {JSX.Element}
+ */
 function Dashboard({ date }) {
+  let isToday = true;
+  const query = useQuery();
+  const getDate = query.get("date");
+
+  if (getDate && getDate !== today()) {
+    date = getDate;
+    isToday = false;
+  }
+
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [tables, setTables] = useState([]);
 
   useEffect(loadDashboard, [date]);
 
@@ -17,34 +39,56 @@ function Dashboard({ date }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
-
-    listTables().then(setTables)
     return () => abortController.abort();
   }
 
-  function onCancel(reservation_id) {
-    cancelReservation(reservation_id)
-      .then(loadDashboard)
-      .catch(setReservationsError);
+  const displayDate = formatAsDate(date);
+
+  const history = useHistory();
+
+  const previousDate = previous(date);
+  const nextDate = next(date);
+
+  function pushDate(dateToMove) {
+    history.push(`/dashboard?date=${dateToMove}`);
   }
 
-  function onFinish(table_id, reservation_id) {
-    finishTable(table_id, reservation_id)
-      .then(loadDashboard)
-  }
+  let result = reservations.filter((reservation) => {
+    return (
+      reservation.status !== "finished" && reservation.status !== "cancelled"
+    );
+  });
+
+
 
   return (
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations</h4>
+        <h4 className="mb-0">Reservations for {displayDate}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <Reservations reservations={reservations} onCancel={onCancel} />
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Tables</h4>
+      <div className="btn-group" role="group" aria-label="Pick a date">
+        <button
+          className="btn btn-primary"
+          onClick={() => pushDate(previousDate)}
+        >
+          Back
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => history.push("/dashboard")}
+          disabled={date === today()}
+        >
+          Today
+        </button>
+        <button className="btn btn-primary" onClick={() => pushDate(nextDate)}>
+          Forward
+        </button>
       </div>
-      <Tables onFinish={onFinish} tables={tables} />
+      <DisplayReservations reservations={result} isToday={isToday}/>
+      {!reservations.length && <h3>No reservations on this date</h3>}
+      <TableList />
     </main>
   );
 }
