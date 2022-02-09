@@ -45,7 +45,7 @@ function DisplayReservations({ reservations, isToday }) {
             </td>
             <td>{result.people}</td>
             <td>
-              {result.status === "booked" && isToday ? (
+              {result.status === "booked" ? (
                 <a
                   className="btn btn-primary"
                   href={`/reservations/${result.reservation_id}/seat`}
