@@ -50,5 +50,9 @@
     "license": "UNLICENSED",
     "dependencies": {
       "knex": "^0.95.15"
-    }
+    },
+    "engines" : { 
+        "npm" : ">=7.0.0",
+        "node" : ">=16.0.0"
+      }
   }
