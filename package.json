@@ -2,6 +2,10 @@
     "name": "periodic-tables-restaurant-reservation-system",
     "version": "1.0.0",
     "description": "Periodic Tables restaurant reservation system capstone project",
+    "engines" : { 
+        "npm" : ">=8.x",
+        "node" : ">=16.x"
+      },
     "private": true,
     "repository": {
       "type": "git",
@@ -50,9 +54,5 @@
     "license": "UNLICENSED",
     "dependencies": {
       "knex": "^0.95.15"
-    },
-    "engines" : { 
-        "npm" : ">=8.x",
-        "node" : ">=16.x"
-      }
+    }
   }
