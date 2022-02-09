@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "description": "Periodic Tables restaurant reservation system capstone project",
     "engines" : { 
-        "npm" : "7.0.0",
-        "node" : "16.0.0"
+        "npm" : "8.4.0",
+        "node" : "16.13.2"
       },
     "private": true,
     "repository": {
