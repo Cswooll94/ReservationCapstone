@@ -1,7 +1,7 @@
 # Restaurant Reservation System
 
 ## Deployed Application
-[Restaurant Reservations](https://capstone-back-csw.herokuapp.com)
+[Restaurant Reservations](https://capstone-front-csw.herokuapp.com/dashboard)
 
 ## Project Summary
 A full stack web application built with React, Node, Express, CSS, Bootstrap and connected to a PostgreSQL database.
